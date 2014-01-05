@@ -36,16 +36,7 @@ class RegisterForm extends Form{
             'filters' => array(
                 'name' => 'StringTrim'
             ),
-            'validators' => array(
-                array(
-                    'name' => 'EmailAddress',
-                    'options' => array(
-                        'messages' => array(
-                        \Zend\Validator\EmailAddress::INVALID_FORMAT => 'Email address format is invalid'
-                        )
-                    )
-                )
-            )
+            
         ));
         $this->add(array(
             'name' => 'password',
