@@ -9,14 +9,11 @@ namespace Users\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-use Users\Form\RegisterForm;
-use Users\Form\RegisterFilter;
 
 use Users\Model\User;
-use Users\Model\UserTable;
 class RegisterController extends AbstractActionController{
     public function indexAction() {
-        $form = new RegisterForm();
+        $form = $this->getServiceLocator()->get('RegisterForm');
         $viewModel = new ViewModel(array(
             "form" => $form
         ));
@@ -33,14 +30,12 @@ class RegisterController extends AbstractActionController{
             );
         }
         $post = $this->request->getPost();
-        $form = new RegisterForm();
-        $inputFilter = new RegisterFilter();
-        $form->setInputFilter($inputFilter);
+        $form = $this->getServiceLocator()->get('RegisterForm');
         $form->setData($post);
         if (!$form->isValid()){
             $model = new ViewModel(array(
                 'error' => TRUE,
-                  'form' => $form
+                'form' => $form
             ));
             $model->setTemplate('users/register/index');
             return $model;
@@ -60,18 +55,16 @@ class RegisterController extends AbstractActionController{
     }
     
     protected function createUser(array $data) {
-        $sm = $this->getServiceLocator();
-        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-        $resultSetPrototype = new \Zend\Db\ResultSet\ResultSet();
-        $resultSetPrototype->setArrayObjectPrototype(new \Users\Model\User);
-        $tableGateway = new \Zend\Db\TableGateway\TableGateway('user', $dbAdapter, NULL, $resultSetPrototype);
-         
-        
         $user = new User();
         $user->exchangeArray($data);
-        $userTable = new UserTable($tableGateway);
+        
+        
+        $user->setPassword($data['password']);
+        
+        $userTable = $this->getServiceLocator()->get('UserTable');
         $userTable->saveUser($user);
         return TRUE;
+        
     }
 }
 
