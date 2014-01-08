@@ -13,6 +13,12 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 
+use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\TableGateway\TableGateway;
+
+use Users\Model\User;
+use Users\Model\UserTable;
+
 class Module implements AutoloaderProviderInterface
 {
     public function getAutoloaderConfig()
@@ -42,5 +48,47 @@ class Module implements AutoloaderProviderInterface
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+    }
+    
+    public function getServiceConfig() {
+        return array(
+            'abstract_factories' => array(),
+            'aliases' => array(),
+            'factories' => array(
+                //DB
+                'UserTable' => function($sm){
+                    $tableGateway = $sm->get('UserTableGateway');
+                    $table = new UserTable($tableGateway);
+                    return $table;
+                },
+                'UserTableGateway' => function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new User());
+                    return new TableGateway('user', $dbAdapter, NULL, $resultSetPrototype);
+                },
+                //FORMS
+                'LoginForm' => function($sm){
+                    $form = new \Users\Form\LoginForm();
+                    $form->setInputFilter($sm->get('LoginFilter'));
+                    return $form;
+                },
+                 'RegisterForm' => function($sm){
+                    $form = new \Users\Form\RegisterForm();
+                    $form->setInputFilter($sm->get('RegisterFilter'));
+                    return $form;
+                },
+                //FILTERS
+                'LoginFilter' => function($sm){
+                    return new \Users\Form\LoginFilter();
+                },
+                  'RegisterFilter' => function($sm){
+                    return new \Users\Form\RegisterFilter();
+                }      
+            ), 
+            'invokables' => array(),
+            'services' => array(),
+            'shared' => array()
+        );        
     }
 }
