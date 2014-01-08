@@ -19,6 +19,8 @@ use Zend\Db\TableGateway\TableGateway;
 use Users\Model\User;
 use Users\Model\UserTable;
 
+use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
+use Zend\Authentication\AuthenticationService;
 class Module implements AutoloaderProviderInterface
 {
     public function getAutoloaderConfig()
@@ -55,6 +57,14 @@ class Module implements AutoloaderProviderInterface
             'abstract_factories' => array(),
             'aliases' => array(),
             'factories' => array(
+                //Services
+                'AuthService' => function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'user', 'email', 'password', 'MD5(?)');
+                    $authService = new AuthenticationService();
+                    $authService->setAdapter($dbTableAuthAdapter);
+                    return $authService;
+                },
                 //DB
                 'UserTable' => function($sm){
                     $tableGateway = $sm->get('UserTableGateway');
