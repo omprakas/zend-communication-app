@@ -18,5 +18,9 @@ class User{
             $this->setPassword($data['password']);
         }
     }
+    
+    public function getArrayCopy(){
+         return get_object_vars($this);
+    }
 }
 
