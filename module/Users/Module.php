@@ -88,13 +88,21 @@ class Module implements AutoloaderProviderInterface
                     $form->setInputFilter($sm->get('RegisterFilter'));
                     return $form;
                 },
+                 'UserEditForm' => function($sm){
+                    $form = new \Users\Form\UserEditForm();
+                    $form->setInputFilter($sm->get('UserEditFilter'));
+                    return $form;
+                },          
                 //FILTERS
                 'LoginFilter' => function($sm){
                     return new \Users\Form\LoginFilter();
                 },
                   'RegisterFilter' => function($sm){
                     return new \Users\Form\RegisterFilter();
-                }      
+                },
+                'UserEditFilter' => function($sm){
+                    return new \Users\Form\UserEditFilter();
+                }
             ), 
             'invokables' => array(),
             'services' => array(),

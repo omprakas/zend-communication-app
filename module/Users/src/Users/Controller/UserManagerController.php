@@ -52,11 +52,21 @@ class UserManagerController extends AbstractActionController{
         $form->bind($user);
         $form->setData($post);
         
+        if (!$form->isValid()) {
+            $model = new ViewModel(array(
+                'error' => true,
+                'form' => $form
+            ));
+            $model->setTemplate('users/user-manager/edit');
+            return $model;
+        }
         //Save user
         $this->getServiceLocator()->get('UserTable')->saveUser($user);
+        return $this->redirect()->toRoute('users/user-manager');
     }
     
     public function deleteAction() {
         $this->getServiceLocator()->get('UserTable')->deleteUser($this->params()->fromRoute('id'));
+        return $this->redirect()->toRoute('users/user-manager');
     }
 }
