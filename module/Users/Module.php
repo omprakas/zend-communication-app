@@ -81,6 +81,8 @@ class Module implements AutoloaderProviderInterface
                 },
                 'UploadTable' => function($sm){
                     $tableGateway = $sm->get('UploadTableGateway');
+                    $uploadSharingTableGateway = $sm->get('UploadSharingTableGateway');
+                    $table = new UploadTable($tableGateway, $uploadSharingTableGateway);
                     $table = new UploadTable($tableGateway);
                     return $table;
                 },
