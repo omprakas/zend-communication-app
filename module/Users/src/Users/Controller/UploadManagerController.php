@@ -12,6 +12,8 @@ use Zend\View\Model\ViewModel;
 
 use Zend\Http\Headers;
 
+use Users\Model\Upload;
+
 use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 
@@ -38,6 +40,11 @@ class UploadManagerController extends AbstractActionController{
     } 
     
     public function uploadAction() {
+        $uploadTable = $this->getServiceLocator()->get('UploadTable');
+        $userTable = $this->getServiceLocator()->get('UserTable');
+        $userEmail = $this->getAuthService()->getStorage()->read();
+        
+        $user = $userTable->getUserByEmail($userEmail);
         $form = $this->getServiceLocator()->get('UploadForm');
         $viewModel = new ViewModel(array('form' => $form));
         return $viewModel;
@@ -47,5 +54,41 @@ class UploadManagerController extends AbstractActionController{
         //Fetch Configuration from Module Config
         $config = $this->getServiceLocator()->get('config');
         return $config['module_config']['upload_location'];
+    }
+    
+    public function processUploadAction () {
+        $uploadTable = $this->getServiceLocator()->get('UploadTable');
+        $userTable = $this->getServiceLocator()->get('UserTable');
+        $userEmail = $this->getAuthService()->getStorage()->read();
+        
+        $user = $userTable->getUserByEmail($userEmail);
+        
+        $uploadFile = $this->params()->fromFiles('fileupload');
+        $request = $this->getRequest();
+        $form = $this->getServiceLocator()->get('UploadForm');
+        $form->setData($request->getPost());
+        
+        if ($form->isValid()){
+            //Fetch Configuration from Module Config
+            $uploadPath = $this->getFileUploadLocation();
+            $upload = new Upload();
+            //Save Uploaded file
+            $adapter = new \Zend\File\Transfer\Adapter\Http();
+            $adapter->setDestination($uploadPath);
+            if ($adapter->receive($uploadFile['name'])){
+                //File upload successfull
+                $exchange_data = array();
+                $exchange_data['label'] = $request->getPost()->get('label');
+                $exchange_data['filename'] = $uploadFile['name'];
+                $exchange_data['user_id'] = $user->id;
+                
+                $upload->exchangeArray($exchange_data);
+                $uploadTable = $this->getServiceLocator()->get('UploadTable');
+                
+                $uploadTable->saveUpload($upload);
+                
+                return $this->redirect()->toRoute('users/upload-manager', array('action' => 'index'));
+            }
+        }
     }
 }
