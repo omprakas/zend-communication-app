@@ -18,6 +18,8 @@ use Zend\Db\TableGateway\TableGateway;
 
 use Users\Model\User;
 use Users\Model\UserTable;
+use Users\Model\Upload;
+use Users\Model\UploadTable;
 
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 use Zend\Authentication\AuthenticationService;
@@ -77,6 +79,17 @@ class Module implements AutoloaderProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new User());
                     return new TableGateway('user', $dbAdapter, NULL, $resultSetPrototype);
                 },
+                'UploadTable' => function($sm){
+                    $tableGateway = $sm->get('UploadTableGateway');
+                    $table = new UploadTable($tableGateway);
+                    return $table;
+                },
+                'UploadTableGateway' => function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Upload());
+                    return new TableGateway('upload', $dbAdapter, NULL, $resultSetPrototype);
+                },        
                 //FORMS
                 'LoginForm' => function($sm){
                     $form = new \Users\Form\LoginForm();
