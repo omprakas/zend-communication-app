@@ -4,7 +4,8 @@ return array(
         'invokables' => array(
             'Users\Controller\Index' => 'Users\Controller\IndexController',
             'Users\Controller\Register' => 'Users\Controller\RegisterController',
-            'Users\Controller\Login' => 'Users\Controller\LoginController'
+            'Users\Controller\Login' => 'Users\Controller\LoginController',
+            'Users\Controller\UserManager' => 'Users\Controller\UserManagerController'
         ),
     ),
     'router' => array(
@@ -28,17 +29,45 @@ return array(
                     // as you solidify the routes for your module, however,
                     // you may want to remove it and replace it with more
                     // specific routes.
-                    'default' => array(
-                        'type'    => 'Segment',
+                    'login' => array(
+                        'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route' => '/login[/:action]',
                             'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
                             ),
                             'defaults' => array(
+                                'controller' => 'Users\Controller\Login',
+                                'action' => 'index'
+                            )
+                        )
+                    ),
+                    'register' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/register[/:action]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
                             ),
-                        ),
+                            'defaults' => array(
+                                'controller' => 'Users\Controller\Register',
+                                'action' => 'index'
+                            )
+                        )
+                    ),
+                    'user-manager' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/user-manager[/:action[/:id]]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[a-zA-Z0-9_-]*'
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Users\Controller\UserManager',
+                                'action' => 'index'
+                            )
+                        )
                     ),
                 ),
             ),
