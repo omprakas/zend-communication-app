@@ -91,4 +91,16 @@ class UploadManagerController extends AbstractActionController{
             }
         }
     }
+    public function deleteAction() {
+        $uploadTable = $this->getServiceLocator()->get('UploadTable');
+        $uploadId = $this->params()->fromRoute('id');
+        
+        $upload = $uploadTable->getUpload($uploadId);
+        $uploadPath = $this->getFileUploadLocation();
+        // Remove File
+	unlink($uploadPath ."/" . $upload->filename); 
+        
+        $uploadTable->deleteUpload($uploadId);
+        $this->redirect()->toRoute('users/upload-manager', array('action' => 'index'));
+    }
 }
