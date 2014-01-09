@@ -35,5 +35,11 @@ class UploadManagerController extends AbstractActionController{
             'myUploads' => $uploadTable->getUploadsByUserId($user->id)
         ));
         return $viewModel;
-    }   
+    } 
+    
+    public function uploadAction() {
+        $form = $this->getServiceLocator()->get('UploadForm');
+        $viewModel = new ViewModel(array('form' => $form));
+        return $viewModel;
+    }
 }

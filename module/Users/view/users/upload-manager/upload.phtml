@@ -1,0 +1,49 @@
+<section class="upload">
+    <h2>Upload</h2>
+    
+    <?php if ($this->error): ?>
+    <p class="error">
+        There were one or more issues with your submission. Please correct them as indicated below
+    </p>
+    <?php endif; ?>
+    
+    <?php $form = $this->form;
+          $form->prepare();
+          $form->setAttribute('action', $this->url(NULL, array(
+              'controller' => 'UploadManager', 
+              'action' => 'processUpload'
+          )));
+          $form->setAttribute('method', 'post');
+          echo $this->form()->openTag($form);
+    ?>
+    <table>
+        <tr>
+            <td>
+                <?php echo $this->formLabel($form->get('label'));?>
+            </td>
+            
+            <td>
+                <?php echo $this->formElement($form->get('label'));?>
+                <?php echo $this->formElementErrors($form->get('label'));?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <?php echo $this->formLabel($form->get('fileupload'));?>
+            </td>
+            
+            <td>
+                <?php echo $this->formElement($form->get('fileupload'));?>
+                <?php echo $this->formElementErrors($form->get('fileupload'));?>
+            </td>
+        </tr>
+        <tr>        
+            <td>
+                <?php echo $this->formElement($form->get('submit'));?>
+                <?php echo $this->formElementErrors($form->get('submit'));?>
+            </td>
+        </tr>
+    </table>
+    <?php echo $this->form()->closeTag(); ?>
+</section>
+

@@ -105,7 +105,11 @@ class Module implements AutoloaderProviderInterface
                     $form = new \Users\Form\UserEditForm();
                     $form->setInputFilter($sm->get('UserEditFilter'));
                     return $form;
-                },          
+                }, 
+                'UploadForm' => function($sm){
+                    $form = new \Users\Form\UploadForm();
+                    return $form;
+                },  
                 //FILTERS
                 'LoginFilter' => function($sm){
                     return new \Users\Form\LoginFilter();
