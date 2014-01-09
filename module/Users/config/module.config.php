@@ -78,4 +78,8 @@ return array(
             'users' => __DIR__ . '/../view',
         ),
     ),
+    //MODULE CONFIGURATIONS
+    'module_config' => array(
+        'upload_location' => __DIR__.'/../data/uploads'
+    )
 );
