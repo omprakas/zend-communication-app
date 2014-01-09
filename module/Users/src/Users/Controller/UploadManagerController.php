@@ -42,4 +42,10 @@ class UploadManagerController extends AbstractActionController{
         $viewModel = new ViewModel(array('form' => $form));
         return $viewModel;
     }
+    
+    public function getFileUploadLocation() {
+        //Fetch Configuration from Module Config
+        $config = $this->getServiceLocator()->get('config');
+        return $config['module_config']['upload_location'];
+    }
 }
