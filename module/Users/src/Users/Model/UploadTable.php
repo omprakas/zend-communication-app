@@ -17,8 +17,9 @@ class UploadTable{
     protected $tableGateway;
     protected $uploadSharingTableGateway;
     
-    public function __construct(TableGateway $tableGateway) {
+    public function __construct(TableGateway $tableGateway, TableGateway $uploadSharingTableGateway) {
         $this->tableGateway = $tableGateway;
+        $this->uploadSharingTableGateway = $uploadSharingTableGateway;
     }
     
     public function saveUpload(Upload $upload) {

@@ -89,7 +89,11 @@ class Module implements AutoloaderProviderInterface
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Upload());
                     return new TableGateway('upload', $dbAdapter, NULL, $resultSetPrototype);
-                },        
+                }, 
+                'UploadSharingTableGateway' => function($sm){
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    return new TableGateway('uploads_sharing', $dbAdapter);
+                },
                 //FORMS
                 'LoginForm' => function($sm){
                     $form = new \Users\Form\LoginForm();
